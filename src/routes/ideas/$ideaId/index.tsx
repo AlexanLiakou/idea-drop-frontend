@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import type { Idea } from '#/types/Idea';
 
 const fetchIdea = async (ideaId:string) : Promise<Idea> => {
-  const res = await fetch(`http://localhost:8000/ideas/${ideaId}`);
+  const res = await fetch(`/api/ideas/${ideaId}`);
 
     if(!res.ok) throw new Error('Failed to fetch data');
 
