@@ -1,47 +1,55 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import type { Idea } from '#/types/Idea';
-import { createIdea } from '#/api/ideas';
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
+import { useState } from 'react'
+import { useMutation, useSuspenseQuery, queryOptions } from '@tanstack/react-query'
+import { fetchIdea, updateIdea } from '#/api/ideas'
 
-export const Route = createFileRoute('/ideas/new/')({
-  component: NewIdeaPage,
-})
-
-function NewIdeaPage() {
-  const navigate = useNavigate();
-  const [title, setTitle] = useState('');
-  const [summary, setSummary] = useState('');
-  const [description, setDescription] = useState('');
-  const [tags, setTags] = useState('');
-  const [formError, setFormError] = useState('');
-
-  const {mutateAsync, isPending} = useMutation({
-    mutationFn: createIdea,
-    onSuccess: () => {
-      navigate({to:'/ideas'})
-    }
+const ideaQueryOptions = (id: string) => 
+  queryOptions({
+    queryKey: ['idea', id],
+    queryFn: () => fetchIdea(id)
   })
 
-  const handleSubmit = async (e:React.FormEvent) => {
-    e.preventDefault();
+export const Route = createFileRoute('/ideas/$ideaId/edit')({
+  component: IdeaEditPage,
+  loader: async ({params, context:{queryClient}}) => {
+    return queryClient.ensureQueryData(ideaQueryOptions(params.ideaId)
+    )
+  }
+})
 
-    try {
-      await mutateAsync({
-        title,
-        summary,
-        description,
-        tags: tags.split(',').map((tag) => tag.trim()).filter((tag) => tag !== '')
-      })
-    } catch (error) {
-      setFormError('Something went wrong. Please try again later.');
+function IdeaEditPage() {
+  const {ideaId} = Route.useParams();
+  const navigate = useNavigate();
+  const {data: idea} = useSuspenseQuery(ideaQueryOptions(ideaId));
+  const [title, setTitle] = useState(idea.title);
+  const [summary, setSummary] = useState(idea.summary);
+  const [description, setDescription] = useState(idea.description);
+  const [tagsInput, setTagsInput] = useState(idea.tags.join(', '));
+
+  const {mutateAsync, isPending} = useMutation({
+    mutationFn: () => updateIdea(ideaId, {
+      title,
+      summary,
+      description,
+      tags: tagsInput.split(',').map((tag)=> tag.trim()).filter(Boolean)
+    }),
+    onSuccess: () => {
+      navigate({to: '/ideas/$ideaId', params: {ideaId}})
     }
+  });
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await mutateAsync();
   }
 
-  return  (
-    <div className='space-y-4'>
+  return (
+        <div className='space-y-4'>
           <div className='flex justify-between items-center mb-2'>
-            <h1 className='text-4xl font-bold'>Create New Idea</h1>          </div>      <form onSubmit={handleSubmit} className='space-y-2'>
+            <h1 className='text-2xl font-bold'>Edit Idea</h1>
+            <Link className='text-center inline-block !bg-blue-600 hover:!bg-blue-700 text-white font-semibold px-5 py-2 rounded-md transition mb-4' to='/ideas/$ideaId' params={{ideaId}}>Back To Idea</Link>
+          </div>
+      <form onSubmit={handleUpdate} className='space-y-2'>
           <div>
             <label
               htmlFor='title'
@@ -106,26 +114,26 @@ function NewIdeaPage() {
             <input
               id='tags'
               type='text'
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
               className='w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
               placeholder='optional tags, comma separated'
             />
           </div>
-          {
+          {/* {
             formError && formError.length > 0 && (
               <div className='mt-5'>
                 <p className='text-red-600 font-bold'>{formError}</p>
               </div>
             )
-          }
+          } */}
           <div className='mt-5'>
             <button
+            disabled={isPending}
               type='submit'
-              disabled={isPending}
               className='block w-full !bg-blue-600 hover:!bg-blue-700 cursor-pointer text-white font-semibold px-6 py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed'
             >
-              {isPending ? 'Creating...' : 'Create Idea'}
+              {isPending ? 'Updating...' : 'Update Idea'}
             </button>
           </div>
         </form>

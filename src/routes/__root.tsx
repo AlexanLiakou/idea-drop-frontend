@@ -1,11 +1,36 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet, HeadContent, Link } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { QueryClient } from '@tanstack/react-query'
+import Header from '#/components/Header'
+import NotFound from '#/pages/NotFound';
 
-export const Route = createRootRoute({
+type RouterContext = {
+  queryClient: QueryClient
+}
+
+export const Route = createRootRouteWithContext<RouterContext> ()({
+  head: () => ({
+    meta: [
+      {
+        name: 'description',
+        content: 'Share, explore and build on the best startup ideas and side hustles'
+      },
+      {
+        title: 'IdeaDrop - Your Idea Hub'
+      },
+    ],
+  }),
   component: () => (
-    <>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
+    <div className='min-h-screen bg-gray-100 flex- flex-col'>
+      <HeadContent/>
+      <Header/>
+      <main className='flex justify-center p-6'>
+        <div className='w-full max-w-4xl bg-white rounded-2xl shadow-lg p-8'>
+          <Outlet />
+        </div>
+        <TanStackRouterDevtools />
+      </main>
+    </div>
   ),
+  notFoundComponent: NotFound,
 })
