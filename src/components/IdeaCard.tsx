@@ -21,7 +21,7 @@ const IdeaCard = ({idea, button=true} : IdeaCardProps) => {
         <h2 className='text-lg font-semibold'>{idea.title}</h2>
         <p className='text-gray-700 mt-2'>{idea.summary}</p>
       </div>
-      <Link className={linkClasses} to='/ideas/$ideaId' params={{ideaId: idea.id.toString()}}>{button ? 'View Idea →' : 'Read More'}</Link>
+      <Link className={linkClasses} to='/ideas/$ideaId' params={{ideaId: idea._id.toString()}}>{button ? 'View Idea →' : 'Read More'}</Link>
     </div>
   );
 };

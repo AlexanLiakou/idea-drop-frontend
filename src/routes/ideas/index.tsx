@@ -5,7 +5,7 @@ import type { Idea } from '#/types/Idea'
 import IdeaCard from '#/components/IdeaCard'
 
 const ideasQueryOptions = () => queryOptions({
-  queryKey: ['/ideas'],
+  queryKey: ['ideas'],
   queryFn: () => fetchIdeas()
 })
 
@@ -24,8 +24,7 @@ export const Route = createFileRoute('/ideas/')({
 })
 
 function IdeasPage() {
-  const {data} = useSuspenseQuery(ideasQueryOptions());
-  const ideas = [...data].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const {data : ideas} = useSuspenseQuery(ideasQueryOptions());
   
   return (
     <div className='p-4'>
@@ -33,7 +32,7 @@ function IdeasPage() {
       <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
       {
         ideas && ideas.map((idea : Idea) => (
-            <IdeaCard key={idea.id} idea={idea}/>
+            <IdeaCard key={idea._id} idea={idea}/>
           ))
       }
       </div>
