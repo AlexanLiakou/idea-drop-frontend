@@ -58,7 +58,7 @@ const Header = () => {
               </>
             ) : (
               <>
-                <span className='text-gray-700 font-mwdium px-2'>Welcome, {user.name}</span>
+                <span className='text-gray-700 font-mwdium px-2 hidden sm:block'>Welcome, {user.name}</span>
                 <button onClick={handleLogout} className=' cursor-pointer !bg-red-600 hover:!bg-red-900 text-white font-medium transition px-4 py-2 rounded-md'>Logout</button>
               </>
             )
