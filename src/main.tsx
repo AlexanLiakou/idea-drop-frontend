@@ -7,6 +7,8 @@ import { queryClient } from './router';
 import { AuthProvider } from './context/AuthContext'
 import './styles.css'
 
+console.log('API URL:', import.meta.env.VITE_PRODUCTION_API_URL);
+console.log('IS PROD:', import.meta.env.PROD);
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
