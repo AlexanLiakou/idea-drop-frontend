@@ -19,15 +19,20 @@ A simple full-stack application to store project ideas. It has a full idea CRUD 
 **Main:** [MongoDb](https://www.mongodb.com/), [Mongoose](https://www.npmjs.com/package/mongoose), [Express.js](https://expressjs.com/en/), [Jose JWT Tokens](https://www.npmjs.com/package/jose),
 
 **Packages:** [Bcrypt.js](https://www.npmjs.com/package/bcryptjs), [Cookie Parser](https://www.npmjs.com/package/cookie-parser), [Cors](https://www.npmjs.com/package/cors), [Dotenv](https://www.npmjs.com/package/dotenv)
+
+<br>
+
 ## GitHub Repositories
 
 [Front-end](https://github.com/AlexanLiakou/idea-drop-frontend)
 
 [Back-end](https://github.com/AlexanLiakou/idea-drop-backend)
+
+<br>
+
 ## Demo 
 
 [Idea Hub](https://idea-drop-frontend-seven.vercel.app/)
-
 
 <br>
 
