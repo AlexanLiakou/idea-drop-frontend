@@ -2,8 +2,7 @@ import axios from "axios";
 import { getStoredAccessToken, setStoredAccessToken } from "#/helpers/authToken";
 import { refreshAccessToken } from "./auth";
 
-const isProduction = import.meta.env.PROD;
-const baseURL = `${isProduction ? import.meta.env.VITE_PRODUCTION_API_URL : import.meta.env.VITE_API_URL}/api`;
+const baseURL = `${import.meta.env.VITE_API_URL}/api`;
 
 const api = axios.create({
   baseURL,
